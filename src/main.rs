@@ -1,7 +1,7 @@
 mod game_board;
 mod snake_controller;
-mod window_manager;
 mod tests;
+mod window_manager;
 
 use sdl2::pixels::Color;
 use sdl2::{event::Event, keyboard::Keycode};
@@ -50,6 +50,6 @@ fn main() {
         snake.move_snake();
         snake.update_snake_coords();
         window.update_screen(&snake.game_board.game_board);
-        std::thread::sleep(std::time::Duration::from_millis(100))
+        std::thread::sleep(std::time::Duration::from_millis(500))
     }
 }

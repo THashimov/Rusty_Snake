@@ -26,11 +26,13 @@ impl WindowManager {
                 if bitmap[y][x] == 1 {
                     let x_coord: i32 = x.try_into().unwrap();
                     let y_coord: i32 = y.try_into().unwrap();
-                    
-                self.canvas.set_draw_color(Color::RGB(0, 255, 0));
 
-                self.canvas.fill_rect(Rect::new(x_coord * 10, y_coord * 10, 8, 8)).unwrap();
-            }
+                    self.canvas.set_draw_color(Color::RGB(0, 255, 0));
+
+                    self.canvas
+                        .fill_rect(Rect::new(x_coord * 10, y_coord * 10, 8, 8))
+                        .unwrap();
+                }
             }
         }
         self.canvas.present();
