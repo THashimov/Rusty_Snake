@@ -3,6 +3,7 @@ mod snake_controller;
 mod tests;
 mod window_manager;
 
+use sdl2::EventPump;
 use sdl2::pixels::Color;
 use sdl2::{event::Event, keyboard::Keycode};
 
@@ -15,41 +16,76 @@ fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut snake = Snake::new_snake();
 
-    'running: loop {
+    while !snake.game_over {
         window.canvas.set_draw_color(Color::RGB(0, 40, 40));
         window.canvas.clear();
         window.canvas.present();
 
-        for event in event_pump.poll_iter() {
-            match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => break 'running,
-                Event::KeyDown {
-                    keycode: Some(Keycode::Up),
-                    ..
-                } => snake.change_snake_direction(Direction::Up),
-                Event::KeyDown {
-                    keycode: Some(Keycode::Down),
-                    ..
-                } => snake.change_snake_direction(Direction::Down),
-                Event::KeyDown {
-                    keycode: Some(Keycode::Left),
-                    ..
-                } => snake.change_snake_direction(Direction::Left),
-                Event::KeyDown {
-                    keycode: Some(Keycode::Right),
-                    ..
-                } => snake.change_snake_direction(Direction::Right),
-                _ => {}
-            }
-        }
+        scan_for_key_press(&mut event_pump, &mut snake);
 
-        snake.move_snake();
         snake.update_snake_coords();
         window.update_screen(&snake.game_board.game_board);
-        std::thread::sleep(std::time::Duration::from_millis(500))
+        snake.move_snake();
+        if snake.has_food_been_eaten() {
+            snake.grow_snake()
+        };
+        
+        std::thread::sleep(std::time::Duration::from_millis(50))
     }
+
+    'running: loop {
+        if scan_for_key_press(&mut event_pump, &mut snake) {
+            break 'running
+        }
+    }
+
+}
+
+fn scan_for_key_press(event_pump: &mut EventPump, snake: &mut Snake) -> bool {
+    for event in event_pump.poll_iter() {
+        match event {
+            Event::Quit { .. }
+            | Event::KeyDown {
+                keycode: Some(Keycode::Escape),
+                ..
+            } => {
+                snake.game_over = true;
+                return true
+            },
+            Event::KeyDown {
+                keycode: Some(Keycode::Up),
+                ..
+            } => {
+                if snake.direction != Direction::Down {
+                    snake.direction = Direction::Up
+                }
+            }
+            Event::KeyDown {
+                keycode: Some(Keycode::Down),
+                ..
+            } => {
+                if snake.direction != Direction::Up {
+                    snake.direction = Direction::Down
+                }
+            }
+            Event::KeyDown {
+                keycode: Some(Keycode::Left),
+                ..
+            } => {
+                if snake.direction != Direction::Right {
+                    snake.direction = Direction::Left
+                }
+            }
+            Event::KeyDown {
+                keycode: Some(Keycode::Right),
+                ..
+            } => {
+                if snake.direction != Direction::Left {
+                    snake.direction = Direction::Right
+                }
+            }
+            _ => {}
+        }
+    }
+    return false
 }

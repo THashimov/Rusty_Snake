@@ -8,7 +8,7 @@ mod tests {
         let mut snake_len = vec![];
 
         for i in 0..3 {
-            let mut coord_to_push = [0u8; 2];
+            let mut coord_to_push = [0i8; 2];
             coord_to_push[0] = snake.head_coord[0] + i;
             coord_to_push[1] = snake.head_coord[1];
 
@@ -36,33 +36,28 @@ mod tests {
     }
 
     #[test]
-    fn move_left() {
-        let mut snake = Snake::new_snake();
+    fn grow_snake() { 
+        let snake = Snake::new_snake();
 
-        // Decrease head coord by 1 to move left
-        // Increase to move right
-        snake.head_coord[0] = snake.head_coord[0] - 1;
-
-        // Insert new head coord
-        snake.snake_len.insert(0, snake.head_coord);
-
-        snake.tail_coord = snake.snake_len.pop().unwrap();
-
-        snake.game_board.game_board[snake.tail_coord[0] as usize][snake.tail_coord[1] as usize] = 0;
+        let index = snake.snake_len.len() - 1;
+        
+        println!("{:?}", snake.snake_len);
+        
+        println!("{:?}", snake.snake_len[index])
     }
 
     #[test]
-    fn move_up() {
+    fn check_for_collision_with_self() {
         let mut snake = Snake::new_snake();
 
-        snake.head_coord[0] = snake.head_coord[0] - 1;
+        snake.head_coord = [51, 15];
+        println!("{:?}", snake.snake_len);
 
-        // Insert new head coord
-        snake.snake_len.insert(0, snake.head_coord);
-
-        snake.tail_coord = snake.snake_len.pop().unwrap();
-
-        snake.game_board.game_board[snake.tail_coord[0] as usize][snake.tail_coord[1] as usize] = 0;
-
+        for i in 1..snake.snake_len.len() {
+            if snake.snake_len[i] == snake.head_coord
+            {
+                println!("ded");
+            }
+        }
     }
 }
