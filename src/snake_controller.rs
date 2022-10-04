@@ -83,8 +83,7 @@ impl Snake {
         self.head_coord[_x_or_y_index] += _index_direction;
 
         // Wrap screen 
-        // Found this formula on stack overflow, not really sure how it works
-        // Remainder is real tough to understand
+        // Found this formula on stack overflow, not really sure how remainder works
         // (x%32 + 32)%32
         self.head_coord[1] = (self.head_coord[1] % 32 + 32) % 32;
         self.head_coord[0] = (self.head_coord[0] % 64 + 64) % 64;
